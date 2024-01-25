@@ -290,7 +290,7 @@ QProgressBar::chunk{
      <number>0</number>
     </property>
     <property name="bottomMargin">
-     <number>0</number>
+     <number>5</number>
     </property>
     <property name="spacing">
      <number>0</number>
@@ -365,7 +365,7 @@ QProgressBar::chunk{
            <number>0</number>
           </property>
           <property name="rightMargin">
-           <number>0</number>
+           <number>12</number>
           </property>
           <property name="bottomMargin">
            <number>0</number>
@@ -374,7 +374,7 @@ QProgressBar::chunk{
            <number>0</number>
           </property>
           <item row="0" column="1">
-           <widget class="QRadioButton" name="radioButton">
+           <widget class="QRadioButton" name="all_pass_radioButton">
             <property name="text">
              <string>All Pass Filter</string>
             </property>
@@ -452,9 +452,9 @@ QProgressBar::chunk{
                <item row="0" column="0">
                 <layout class="QVBoxLayout" name="verticalLayout_3">
                  <item>
-                  <widget class="QGraphicsView" name="graphicsView">
+                  <widget class="QGraphicsView" name="unite_circle">
                    <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
+                    <string notr="true"/>
                    </property>
                   </widget>
                  </item>
@@ -557,13 +557,6 @@ QProgressBar::chunk{
                    </item>
                   </layout>
                  </item>
-                 <item>
-                  <widget class="QGraphicsView" name="graphicsView_2">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
                </item>
               </layout>
@@ -594,7 +587,7 @@ QProgressBar::chunk{
              <number>0</number>
             </property>
             <property name="rightMargin">
-             <number>0</number>
+             <number>11</number>
             </property>
             <property name="bottomMargin">
              <number>0</number>
@@ -624,16 +617,16 @@ QProgressBar::chunk{
                 <number>0</number>
                </property>
                <item>
-                <widget class="QGraphicsView" name="magnitude_response">
+                <widget class="QGraphicsView" name="magnitude_response_view">
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(255, 255, 255);</string>
+                  <string notr="true"/>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QGraphicsView" name="phase_response">
+                <widget class="QGraphicsView" name="phase_response_view">
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(255, 255, 255);</string>
+                  <string notr="true"/>
                  </property>
                 </widget>
                </item>
@@ -665,7 +658,7 @@ QProgressBar::chunk{
                 <number>0</number>
                </property>
                <item>
-                <widget class="QGraphicsView" name="unfiltered_signal">
+                <widget class="QGraphicsView" name="unfiltered_signal_view">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -673,12 +666,12 @@ QProgressBar::chunk{
                   </size>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(255, 255, 255);</string>
+                  <string notr="true"/>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QGraphicsView" name="filtered_signal">
+                <widget class="QGraphicsView" name="filtered_signal_view">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -686,7 +679,7 @@ QProgressBar::chunk{
                   </size>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(255, 255, 255);</string>
+                  <string notr="true"/>
                  </property>
                 </widget>
                </item>
@@ -721,7 +714,7 @@ QProgressBar::chunk{
           <widget class="QFrame" name="right_frame">
            <property name="maximumSize">
             <size>
-             <width>1000</width>
+             <width>0</width>
              <height>16777215</height>
             </size>
            </property>
@@ -735,474 +728,92 @@ QProgressBar::chunk{
             <enum>QFrame::Raised</enum>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_7">
-            <property name="spacing">
-             <number>0</number>
-            </property>
             <property name="leftMargin">
              <number>0</number>
             </property>
             <property name="topMargin">
              <number>0</number>
             </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
             <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
-             <widget class="QFrame" name="frame_6">
+             <widget class="QListWidget" name="listWidget">
               <property name="styleSheet">
-               <string notr="true"/>
+               <string notr="true">background-color: rgb(255, 255, 127);</string>
               </property>
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_14">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_15">
-                 <item>
-                  <widget class="QGraphicsView" name="all_pass_plot_1">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(255, 255, 255);</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QGraphicsView" name="all_pass_phase_1">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_11">
-                   <item>
-                    <widget class="QCheckBox" name="checkBox_4">
-                     <property name="text">
-                      <string>Apply</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="verticalSpacer_4">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>20</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_16">
-                     <item>
-                      <widget class="QLabel" name="label_4">
-                       <property name="font">
-                        <font>
-                         <family>Ubuntu</family>
-                         <pointsize>-1</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string>a =</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLCDNumber" name="lcdNumber_4">
-                       <property name="digitCount">
-                        <number>1</number>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-              </layout>
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame_9">
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>a</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0,0,0);</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton">
+                <property name="text">
+                 <string>apply </string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QGraphicsView" name="all_pass_unite_circle">
               <property name="styleSheet">
                <string notr="true"/>
               </property>
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_17">
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_18">
-                 <item>
-                  <widget class="QGraphicsView" name="all_pass_plot_2">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(255, 255, 255);</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QGraphicsView" name="all_pass_phase_2">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_12">
-                   <item>
-                    <widget class="QCheckBox" name="checkBox_5">
-                     <property name="text">
-                      <string>Apply</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="verticalSpacer_5">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>20</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_19">
-                     <item>
-                      <widget class="QLabel" name="label_5">
-                       <property name="font">
-                        <font>
-                         <family>Ubuntu</family>
-                         <pointsize>-1</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string>a =</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLCDNumber" name="lcdNumber_5">
-                       <property name="digitCount">
-                        <number>1</number>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-              </layout>
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame_10">
+             <widget class="QGraphicsView" name="all_pass_phase_response">
               <property name="styleSheet">
                <string notr="true"/>
               </property>
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_20">
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_21">
-                 <item>
-                  <widget class="QGraphicsView" name="all_pass_plot_3">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(255, 255, 255);</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QGraphicsView" name="all_pass_phase_3">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_13">
-                   <item>
-                    <widget class="QCheckBox" name="checkBox_6">
-                     <property name="text">
-                      <string>Apply</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="verticalSpacer_6">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>20</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_22">
-                     <item>
-                      <widget class="QLabel" name="label_6">
-                       <property name="font">
-                        <font>
-                         <family>Ubuntu</family>
-                         <pointsize>-1</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string>a =</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLCDNumber" name="lcdNumber_6">
-                       <property name="digitCount">
-                        <number>1</number>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-              </layout>
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame_5">
-              <property name="styleSheet">
-               <string notr="true"/>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_11">
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_12">
-                 <item>
-                  <widget class="QGraphicsView" name="all_pass_plot_4">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(255, 255, 255);</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QGraphicsView" name="all_pass_phase_4">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_10">
-                   <item>
-                    <widget class="QCheckBox" name="checkBox_3">
-                     <property name="text">
-                      <string>Apply</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="verticalSpacer_3">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>20</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_13">
-                     <item>
-                      <widget class="QLabel" name="label_3">
-                       <property name="font">
-                        <font>
-                         <family>Ubuntu</family>
-                         <pointsize>-1</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string>a =</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLCDNumber" name="lcdNumber_3">
-                       <property name="digitCount">
-                        <number>1</number>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QFrame" name="frame_11">
-              <property name="styleSheet">
-               <string notr="true"/>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_23">
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_24">
-                 <item>
-                  <widget class="QGraphicsView" name="all_pass_plot_5">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(255, 255, 255);</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QGraphicsView" name="all_pass_phase_5">
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_14">
-                   <item>
-                    <widget class="QCheckBox" name="checkBox_7">
-                     <property name="text">
-                      <string>Apply</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="verticalSpacer_7">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>20</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_25">
-                     <item>
-                      <widget class="QLabel" name="label_7">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>32</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="font">
-                        <font>
-                         <family>Ubuntu</family>
-                         <pointsize>-1</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string>a =</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>27</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QPushButton" name="pushButton_2">
+                <property name="text">
+                 <string>Apply</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_3">
+                <property name="text">
+                 <string>Clear</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>
@@ -1214,7 +825,6 @@ QProgressBar::chunk{
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections>

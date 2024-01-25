@@ -75,7 +75,7 @@ class RealTimeGraph(QWidget):
             distance = np.sqrt(delta_x ** 2 + delta_y ** 2)
 
             # Calculate the amplitude of the signal based on the distance and direction
-            amplitude = distance / 10.0  # Adjust the scaling factor as needed
+            amplitude = distance /10  # Adjust the scaling factor as needed
 
             # Determine the direction of movement
             direction = np.sign(delta_x)  # Use the x-direction for simplicity
@@ -91,11 +91,4 @@ class RealTimeGraph(QWidget):
             # If mouse is not moving, clear the plot
             self.curve.clear()
 
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = RealTimeGraph()
-    ex.show()
-    sys.exit(app.exec_())
 
