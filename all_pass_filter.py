@@ -8,10 +8,10 @@ from PyQt5.QtWidgets import *
 
 
 class AllPassFilterFeature(object):
-    def __init__(self, filters = None):
-        self.phase_scene = pg.PlotWidget()
+    def __init__(self, filters = None, phase_w = None, poles_zeros_w = None):
+        self.phase_scene = phase_w if phase_w is not None else pg.plotWidget()
         self.mag_scene = pg.PlotWidget()
-        self.zeros_poles_scene = pg.PlotWidget()
+        self.zeros_poles_scene = poles_zeros_w if poles_zeros_w is not None else pg.plotWidget()
         self.all_pass_filters = filters if filters is not None else []
 
     def get_scene(self):
@@ -111,7 +111,7 @@ f2 = AllPassFilter(a = 0.2)
 f3 = AllPassFilter(a = 0.1)
 f = AllPassFilterFeature(filters=[f1,f2,f3])
 i1,i2,i3 = f.get_scene()
-f.apply_filters("22")
+f.apply_filters(22)
 
 
 win.setCentralWidget(i3)

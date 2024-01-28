@@ -5,8 +5,6 @@ from PyQt5.QtCore import QTimer
 
 import pyqtgraph as pg
 
-
-
 import sys
 from pathlib import Path
 from res_rc import *  # Import the resource module
@@ -17,7 +15,7 @@ import urllib.request
 import os
 from os import path
 import SignalViewer as sv
-from Touch_pad import RealTimeGraph
+from touch_pad import RealTimeGraph
 
 ui, _ = loadUiType('main.ui')
 def create_plot_widget(graphics_view, object_name="", bottom_label="", left_label="", signal_viewer_title=None,
@@ -49,7 +47,7 @@ class MainApp(QMainWindow, ui):
 
         self.mouse_pad = RealTimeGraph()
         self.verticalLayout_2.addWidget(self.mouse_pad.view)
-        self.unfiltered_signal_view.addWidget(self.mouse_pad.plotWidget)
+        # self.unfiltered_signal_view.addWidget(self.mouse_pad.plotWidget)
 
         # Objects : signal
 
