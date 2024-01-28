@@ -34,7 +34,15 @@ class AllPassFilterFeature(object):
         return  self.phase_scene,self.mag_scene,self.zeros_poles_scene
 
     def apply_filters(self, filter):
-        pass
+        responses  = []
+        for f in self.all_pass_filters:
+            _,all_pass_res = f.get_freq_response()
+            responses.append(all_pass_res)
+        responses = np.array(responses)
+        # apply element wise product
+        all_pass_filters_res = np.prod(responses,axis=0)
+        result = all_pass_filters_res * filter
+        return result
 
 class AllPassFilter:
     def __init__(self, a):
@@ -43,14 +51,19 @@ class AllPassFilter:
         self.freq_response_plot = self.get_frequency_response_plots()
         self.zeros_poles_plot = self.get_zeros_poles_plot()
         self.frequencies, self.phase_values = self.calculate_phase_response()
+        
 
     def transfer_function(self, z):
         return (z**-1 - self.a) / (1 - self.a * z**-1)
+    def get_freq_response(self):
+                # Frequency response
+        frequencies, response = freqz([-np.conjugate(self.a), 1], [1, -self.a], worN=8000)
+        return frequencies, response
 
     def get_frequency_response_plots(self):
         # Frequency response
         frequencies, response = freqz([-np.conjugate(self.a), 1], [1, -self.a], worN=8000)
-
+        
         # Plot magnitude response
 
         mag_plot = pg.PlotDataItem(0.5 * frequencies / np.pi, np.abs(response))
@@ -98,7 +111,7 @@ f2 = AllPassFilter(a = 0.2)
 f3 = AllPassFilter(a = 0.1)
 f = AllPassFilterFeature(filters=[f1,f2,f3])
 i1,i2,i3 = f.get_scene()
-
+f.apply_filters("22")
 
 
 win.setCentralWidget(i3)
