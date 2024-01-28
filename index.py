@@ -2,7 +2,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QTimer
-
+from main import ZPlaneSignalFilter
 import pyqtgraph as pg
 
 import sys
@@ -50,7 +50,7 @@ class MainApp(QMainWindow, ui):
         # self.unfiltered_signal_view.addWidget(self.mouse_pad.plotWidget)
 
         # Objects : signal
-
+        
         self.unfiltered_signal_plot = sv.PlotSignal()
         self.filtered_signal_plot = sv.PlotSignal()
 
@@ -80,6 +80,7 @@ class MainApp(QMainWindow, ui):
             self.unfiltered_signal_view, "unfiltered_plot_widget", "Time (sec)",
             "Amplitude","UnFiltered Signal", self.filtered_signal_plot
         )
+        self.z_plane_signal_filter  = None
 
 #####################################################################################################################
         for i in range(len(self.response_graphics_views)):
@@ -96,26 +97,29 @@ class MainApp(QMainWindow, ui):
             self.plot_widget.setLabel("left", text=self.response_graphics_view[i][2])
             self.plot_widget.showGrid(x=True, y=True)
             self.plot_widget.setTitle(self.response_graphics_view[i][3])
+
+
 #####################################################################################################################
-        for i in range(len(self.unit_circle_graphics_views)):
+        # for i in range(len(self.unit_circle_graphics_views)):
             # Create the plot widget
-            self.plot_widget = pg.PlotWidget(self.unit_circle_graphics_views[i])
-            self.plot_widget.setAspectLocked()
-            self.plot_widget.showGrid(x=False, y=False)
-
-            # Draw the unit circle as a CircleROI
-            self.unit_circle = pg.CircleROI([-1, -1], size=[2, 2], movable=False, pen=(0, 0, 255))
-            self.plot_widget.addItem(self.unit_circle)
-            self.plot_widget.setBackground((25, 35, 45))
-            # Draw x-axis and y-axis at the center of the circle
-            self.x_axis = pg.InfiniteLine(pos=0, angle=0, pen=(255, 0, 0), movable=False)
-            self.y_axis = pg.InfiniteLine(pos=0, angle=90, pen=(0, 255, 0), movable=False)
-            self.plot_widget.addItem(self.x_axis)
-            self.plot_widget.addItem(self.y_axis)
-
-            self.graphics_view_layout1 = QHBoxLayout(self.unit_circle_graphics_views[i])
-            self.graphics_view_layout1.addWidget(self.plot_widget)
-            self.unit_circle_graphics_views[i].setLayout(self.graphics_view_layout1)
+        self.plot_widget = pg.PlotWidget(self.unit_circle_graphics_views[0])
+        self.plot_widget.setAspectLocked()
+        self.plot_widget.showGrid(x=False, y=False)
+        # Draw the unit circle as a CircleROI
+        self.unit_circle = pg.CircleROI([-1, -1], size=[2, 2], movable=False, pen=(0, 0, 255))
+        self.plot_widget.addItem(self.unit_circle)
+        self.plot_widget.setBackground((25, 35, 45))
+        # Draw x-axis and y-axis at the center of the circle
+        self.x_axis = pg.InfiniteLine(pos=0, angle=0, pen=(255, 0, 0), movable=False)
+        self.y_axis = pg.InfiniteLine(pos=0, angle=90, pen=(0, 255, 0), movable=False)
+        self.plot_widget.addItem(self.x_axis)
+        self.plot_widget.addItem(self.y_axis)
+        self.plot_widget.clear()
+        self.z_plane_signal_filter = ZPlaneSignalFilter(self.plot_widget)
+        self.graphics_view_layout1 = QHBoxLayout(self.unit_circle_graphics_views[0])
+        self.graphics_view_layout1.addWidget(self.plot_widget)
+        self.unit_circle_graphics_views[0].setLayout(self.graphics_view_layout1)
+        
 #####################################################################################################################
 
     def toggle_side_bar(self):
