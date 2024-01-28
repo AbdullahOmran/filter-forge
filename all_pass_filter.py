@@ -2,7 +2,8 @@
 import numpy as np
 import pyqtgraph as pg
 from scipy.signal import freqz, tf2zpk
-
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 class AllPassFilterFeature(object):
     def __init__(self):
@@ -38,8 +39,7 @@ class AllPassFilter:
 
         # Plot phase response
         phase_plot = pg.plot(0.5 * frequencies / np.pi, np.angle(response), title='All-Pass Filter Phase Response', xlabel='Frequency [Hz]', ylabel='Phase [radians]', pen='r', clear=True)
-        mag_plot = mag_plot.getPlotItem()
-        phase_plot = phase_plot.getPlotItem()
+       
         return mag_plot, phase_plot
 
     def get_zeros(self):
@@ -70,3 +70,10 @@ class AllPassFilter:
         phase_values = np.angle(response)
         return 0.5 * frequencies / np.pi, phase_values
 
+App = QApplication([])
+window = QMainWindow()
+AllPassFilter(a=0.5)
+w  = pg.PlotWidget()
+window.setCentralWidget(w)
+window.show()
+App.exec_()
