@@ -54,8 +54,7 @@ class MainApp(QMainWindow, ui):
         self.unfiltered_signal_plot = sv.PlotSignal()
         self.filtered_signal_plot = sv.PlotSignal()
 
-        self.all_pass_radioButton.clicked.connect(self.toggle_side_bar)
-
+        
         self.response_graphics_views = [
             self.magnitude_response_view,
             self.phase_response_view,
@@ -78,7 +77,13 @@ class MainApp(QMainWindow, ui):
         )
         self.unfiltered_plot_widget, self.unfiltered_signal_viewer = create_plot_widget(
             self.unfiltered_signal_view, "unfiltered_plot_widget", "Time (sec)",
-            "Amplitude","UnFiltered Signal", self.filtered_signal_plot
+            "Amplitude","UnFiltered Signal", self.unfiltered_signal_plot
+        )
+        self.magnitude_plot_widget, self.xx_signal_viewer = create_plot_widget(
+            self.magnitude_response_view, "magnitude_response_plot_widget", "Frequency (Hz)", "Magnitude (degrees)", "Magnitude Response"
+        )
+        self.phase_plot_widget, self.xx_signal_viewer = create_plot_widget(
+            self.phase_response_view, "phase_response_plot_widget", "Frequency (Hz)", "Magnitude (degrees)", "Magnitude Response"
         )
         self.z_plane_signal_filter  = None
 
@@ -102,7 +107,7 @@ class MainApp(QMainWindow, ui):
 #####################################################################################################################
         # for i in range(len(self.unit_circle_graphics_views)):
             # Create the plot widget
-        self.plot_widget = pg.PlotWidget(self.unit_circle_graphics_views[0])
+        self.plot_widget = pg.PlotWidget(self.unit_circle_graphics_views[0], enableMenu=False)
         self.plot_widget.setAspectLocked()
         self.plot_widget.showGrid(x=False, y=False)
         # Draw the unit circle as a CircleROI
@@ -115,13 +120,17 @@ class MainApp(QMainWindow, ui):
         self.plot_widget.addItem(self.x_axis)
         self.plot_widget.addItem(self.y_axis)
         self.plot_widget.clear()
-        self.z_plane_signal_filter = ZPlaneSignalFilter(self.plot_widget)
+        
+        self.z_plane_signal_filter = ZPlaneSignalFilter(self.plot_widget,self.magnitude_plot_widget, self.phase_plot_widget,self.add_conjugates)
         self.graphics_view_layout1 = QHBoxLayout(self.unit_circle_graphics_views[0])
         self.graphics_view_layout1.addWidget(self.plot_widget)
         self.unit_circle_graphics_views[0].setLayout(self.graphics_view_layout1)
         
 #####################################################################################################################
-
+        self.all_pass_radioButton.clicked.connect(self.toggle_side_bar)
+        self.clear_zeros.clicked.connect(self.z_plane_signal_filter.clear_zeros)
+        self.clear_poles.clicked.connect(self.z_plane_signal_filter.clear_poles)
+        
     def toggle_side_bar(self):
         if self.all_pass_radioButton.isChecked():
             # for slide activate_slider and disable the other buttons

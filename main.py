@@ -9,12 +9,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class ZPlaneSignalFilter(QWidget):
-    def __init__(self, unit_circle_w):
+    def __init__(self, unit_circle_w, mag_res_w,phase_res_w, checkbox):
         super().__init__()
         self.delete_flag = False  # Flag to control deletion or creation
         self.conjugate_flag = False  # Flag to determine if conjugate plotting is enabled
         self.unit_circle_w = unit_circle_w
-
+        self.mag_res_w = mag_res_w
+        self.phase_res_w = phase_res_w
+        self.reflect_checkbox = checkbox
         self.init_ui()
 
     def init_ui(self):
@@ -76,7 +78,7 @@ class ZPlaneSignalFilter(QWidget):
         self.layout.addWidget(self.plot_response_button)
 
         # Add checkbox for reflection around x-axis
-        self.reflect_checkbox = QCheckBox('Reflect around X-axis', self)
+        
         self.layout.addWidget(self.reflect_checkbox)
 
         # Add buttons for opening CSV file and showing original/filtered signals
@@ -138,6 +140,7 @@ class ZPlaneSignalFilter(QWidget):
             elif event.button() == 2:  # Right mouse button for zeros
                 self.zeros.append((pos.x(), pos.y()))
                 self.plot_zero(pos.x(), pos.y())
+        self.plot_frequency_response()
 
     def on_double_click(self, event):
         if event.double() == True:
@@ -241,28 +244,35 @@ class ZPlaneSignalFilter(QWidget):
         frequencies, response = freqz_zpk(zeros, poles, k=1)
 
         # Plot the magnitude response
-        plt.figure(figsize=(10, 5))
-        plt.subplot(2, 1, 1)
+        # plt.figure(figsize=(10, 5))
+        # plt.subplot(2, 1, 1)
         magnitude = np.abs(response)
         if np.any(np.iscomplex(magnitude)):
             magnitude = np.abs(response.astype(float))  # Cast to float to remove complex part
-        plt.plot(frequencies, magnitude)
-        plt.title('Frequency Response - Magnitude')
-        plt.xlabel('Frequency [radians/sample]')
-        plt.ylabel('Magnitude')
+        # plt.plot(frequencies, magnitude)
+        plot = pg.PlotDataItem(frequencies,magnitude)
+        self.mag_res_w.clear()
+        self.mag_res_w.addItem(plot)
+        
+        # plt.title('Frequency Response - Magnitude')
+        # plt.xlabel('Frequency [radians/sample]')
+        # plt.ylabel('Magnitude')
 
         # Plot the phase response
-        plt.subplot(2, 1, 2)
+        # plt.subplot(2, 1, 2)
         phase = np.angle(response)
         if np.any(np.iscomplex(phase)):
             phase = np.angle(response.astype(float))  # Cast to float to remove complex part
-        plt.plot(frequencies, phase)
-        plt.title('Frequency Response - Phase')
-        plt.xlabel('Frequency [radians/sample]')
-        plt.ylabel('Phase [radians]')
+        # plt.plot(frequencies, phase)
+        plot = pg.PlotDataItem(frequencies,phase)
+        self.phase_res_w.clear()
+        self.phase_res_w.addItem(plot)
+        # plt.title('Frequency Response - Phase')
+        # plt.xlabel('Frequency [radians/sample]')
+        # plt.ylabel('Phase [radians]')
 
-        plt.tight_layout()
-        plt.show()
+        # plt.tight_layout()
+        # plt.show()
 
     def load_signal_from_file(self):
         options = QFileDialog.Options()
