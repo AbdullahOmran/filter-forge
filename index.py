@@ -163,6 +163,7 @@ class MainApp(QMainWindow, ui):
         print(checked_items)
         self.filters = [AllPassFilter(a) for a in checked_items]
         self.feature = AllPassFilterFeature(filters=self.filters, phase_w = self.all_pass_phase_response_plot_widget)
+        self.feature.get_scene()
 
 
     def handleItemClicked(self, item):
