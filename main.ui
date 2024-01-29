@@ -714,7 +714,7 @@ QProgressBar::chunk{
           <widget class="QFrame" name="right_frame">
            <property name="maximumSize">
             <size>
-             <width>0</width>
+             <width>1000</width>
              <height>16777215</height>
             </size>
            </property>
@@ -738,9 +738,9 @@ QProgressBar::chunk{
              <number>0</number>
             </property>
             <item>
-             <widget class="QListWidget" name="listWidget">
+             <widget class="QListWidget" name="all_pass_list_widget">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(255, 255, 127);</string>
+               <string notr="true"/>
               </property>
              </widget>
             </item>
@@ -762,9 +762,9 @@ color: rgb(0,0,0);</string>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="show_all_pass_filter_btn">
                 <property name="text">
-                 <string>apply </string>
+                 <string>Show All Pass Filter</string>
                 </property>
                </widget>
               </item>
@@ -787,9 +787,9 @@ color: rgb(0,0,0);</string>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_6">
               <item>
-               <widget class="QPushButton" name="pushButton_2">
+               <widget class="QPushButton" name="apply_all_pass_filter_btn">
                 <property name="text">
-                 <string>Apply</string>
+                 <string>Apply All Pass Filter</string>
                 </property>
                </widget>
               </item>

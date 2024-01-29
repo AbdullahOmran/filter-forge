@@ -8,7 +8,7 @@ import pyqtgraph as pg
 import sys
 from pathlib import Path
 from res_rc import *  # Import the resource module
-
+import numpy as np
 from PyQt5.uic import loadUiType
 import urllib.request
 
@@ -16,6 +16,7 @@ import os
 from os import path
 import SignalViewer as sv
 from touch_pad import RealTimeGraph
+from all_pass_filter import AllPassFilter, AllPassFilterFeature
 
 ui, _ = loadUiType('main.ui')
 def create_plot_widget(graphics_view, object_name="", bottom_label="", left_label="", signal_viewer_title=None,
@@ -44,28 +45,30 @@ class MainApp(QMainWindow, ui):
         QMainWindow.__init__(self)
         self.setupUi(self)
         self.resize(1500, 900)
+        self.all_pass_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        # self.filters = [AllPassFilter(a) for a in self.all_pass_list]
 
-        self.mouse_pad = RealTimeGraph()
-        self.verticalLayout_2.addWidget(self.mouse_pad.view)
-        # self.unfiltered_signal_view.addWidget(self.mouse_pad.plotWidget)
+        for i in range(len(self.all_pass_list)):
+
+            list_item = QListWidgetItem(f"a = {self.all_pass_list[i]}")
+            list_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsUserCheckable)
+            list_item.setCheckState(Qt.Unchecked)
+            self.all_pass_list_widget.addItem(list_item)
 
         # Objects : signal
-
         self.unfiltered_signal_plot = sv.PlotSignal()
         self.filtered_signal_plot = sv.PlotSignal()
-
-        self.all_pass_radioButton.clicked.connect(self.toggle_side_bar)
 
         self.response_graphics_views = [
             self.magnitude_response_view,
             self.phase_response_view,
-            self.all_pass_phase_response
+            # self.all_pass_phase_response
         ]
 
         self.response_graphics_view = [
-                ["phase_response_plot_widget", "Frequency (Hz)", "Phase (degrees)", "Phase Response"],
-                ["magnitude_response_plot_widget", "Frequency (Hz)", "Magnitude (degrees)", "Magnitude Response"],
-                ["all_pass_phase_response_plot_widget", "Frequency (Hz)", "Phase (degrees)", "All Pass Phase Response"]
+            ["phase_response_plot_widget", "Frequency (Hz)", "Phase (degrees)", "Phase Response"],
+            ["magnitude_response_plot_widget", "Frequency (Hz)", "Magnitude (degrees)", "Magnitude Response"],
+            # ["all_pass_phase_response_plot_widget", "Frequency (Hz)", "Phase (degrees)", "All Pass Phase Response"]
         ]
         self.unit_circle_graphics_views = [
             self.unite_circle,
@@ -74,11 +77,15 @@ class MainApp(QMainWindow, ui):
 
         self.filtered_plot_widget, self.filtered_signal_viewer = create_plot_widget(
             self.filtered_signal_view, "filtered_plot_widget", "Time (sec)",
-            "Amplitude","Filtered Signal", self.filtered_signal_plot
+            "Amplitude", "Filtered Signal", self.filtered_signal_plot
         )
         self.unfiltered_plot_widget, self.unfiltered_signal_viewer = create_plot_widget(
             self.unfiltered_signal_view, "unfiltered_plot_widget", "Time (sec)",
-            "Amplitude","UnFiltered Signal", self.filtered_signal_plot
+            "Amplitude", "UnFiltered Signal", self.unfiltered_signal_plot
+        )
+        self.all_pass_phase_response_plot_widget, xxx = create_plot_widget(
+            self.all_pass_phase_response,"all_pass_phase_response_plot_widget","Frequency (Hz)", "Phase (degrees)",
+            "All Pass Phase Response"
         )
 
 #####################################################################################################################
@@ -116,7 +123,84 @@ class MainApp(QMainWindow, ui):
             self.graphics_view_layout1 = QHBoxLayout(self.unit_circle_graphics_views[i])
             self.graphics_view_layout1.addWidget(self.plot_widget)
             self.unit_circle_graphics_views[i].setLayout(self.graphics_view_layout1)
-#####################################################################################################################
+############################################## For Mouse Pad ###########################################################
+        self.view = QGraphicsView(self)
+        self.scene = QGraphicsScene(self)
+        self.view.setScene(self.scene)
+        self.view.setStyleSheet("background-color: lightGray;")
+        self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+
+        self.verticalLayout_2.addWidget(self.view)
+        self.curve = self.unfiltered_plot_widget.plot(pen = "r")
+
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.updateGraph)
+        self.timer.start(50)  # Set the interval (milliseconds)
+        self.mouse_moving = False
+        # Initialize mouse position and previous position
+        self.mouseX = 0
+        self.mouseY = 0
+        self.prevMouseX = 0
+        self.prevMouseY = 0
+
+        # Accumulated signal
+        self.accumulated_signal = []
+        self.view.mouseMoveEvent = self.mouseMoveEvent
+
+#############################################For Connecting Function###################################################
+        self.all_pass_radioButton.clicked.connect(self.toggle_side_bar)
+        self.clear_btn.clicked.connect(self.clear_graph)
+        self.all_pass_list_widget.itemClicked.connect(self.handleItemClicked)
+        self.show_all_pass_filter_btn.clicked.connect(self.show_all_pass_filter)
+    def show_all_pass_filter(self):
+        checked_items = []
+        for i in range(len(self.all_pass_list)):
+            item = self.all_pass_list_widget.item(i)
+            if item.checkState() == Qt.Checked:
+                checked_items.append(self.all_pass_list[i])
+        print(checked_items)
+        self.filters = [AllPassFilter(a) for a in checked_items]
+        self.feature = AllPassFilterFeature(filters=self.filters, phase_w = self.all_pass_phase_response_plot_widget)
+
+
+    def handleItemClicked(self, item):
+        # Toggle the check state when an item is clicked
+        current_state = item.checkState()
+        item.setCheckState(Qt.Checked if current_state == Qt.Unchecked else Qt.Unchecked)
+
+    def mouseMoveEvent(self, event):
+        # Update mouse coordinates
+        pos = event.pos()
+        self.prevMouseX = self.mouseX
+        self.prevMouseY = self.mouseY
+        self.mouseX = pos.x()
+        self.mouseY = pos.y()
+        self.mouse_moving = True
+
+    def updateGraph(self):
+        if self.mouse_moving:
+            # Calculate the change in mouse coordinates
+            delta_x = self.mouseX - self.prevMouseX
+            delta_y = self.mouseY - self.prevMouseY
+
+            # Calculate the distance moved
+            distance = np.sqrt(delta_x ** 2 + delta_y ** 2)
+
+            # Calculate the amplitude of the signal based on the distance and direction
+            amplitude = distance   # Adjust the scaling factor as needed
+
+            # Determine the direction of movement
+            direction = np.sign(delta_x)  # Use the x-direction for simplicity
+
+            # Accumulate the signal based on the movement
+            self.accumulated_signal.extend(amplitude * np.sin(
+                0.02 * np.arange(len(self.accumulated_signal), len(self.accumulated_signal) + 100)) * direction)
+
+            # Update the plot
+            self.curve.setData(y=self.accumulated_signal)
+            self.mouse_moving = False
 
     def toggle_side_bar(self):
         if self.all_pass_radioButton.isChecked():
@@ -130,6 +214,15 @@ class MainApp(QMainWindow, ui):
         self.animation.setEasingCurve(QEasingCurve.InOutQuart)
         self.animation.start()
         self.right_frame.update()
+
+    def clear_graph(self):
+        self.unfiltered_plot_widget.clear()
+        self.curve = self.unfiltered_plot_widget.plot(pen='r')
+        self.accumulated_signal = []
+
+
+
+
 
 
 
