@@ -18,15 +18,19 @@ class AllPassFilterFeature(object):
         self.phase_scene.clear()
         self.mag_scene.clear()
         self.zeros_poles_scene.clear()
+        phase_response = []
+        freqs = 0
         for filter in self.all_pass_filters:
-            mag,phase = filter.get_frequency_response_plots()
+            mag,_ = filter.get_frequency_response_plots()
+            freqs,phase = filter.calculate_phase_response()
             poles,zeros,circle = filter.get_zeros_poles_plot()
             # c = (random.uniform(0,255),random.uniform(0,255),random.uniform(0,255))
             # pen = pg.mkPen(color = c)
             # self.mag_scene.setPen(pen)
             # self.phase_scene.setPen(pen)
             # self.zeros_poles_scene.setPen(pen)
-            self.phase_scene.addItem(phase)
+            # self.phase_scene.addItem(phase)
+            phase_response.append(phase)
             self.mag_scene.addItem(mag)
             self.zeros_poles_scene.addItem(poles)
             self.zeros_poles_scene.addItem(zeros)
@@ -36,6 +40,9 @@ class AllPassFilterFeature(object):
             self.y_axis = pg.InfiniteLine(pos=0, angle=90, pen=(0, 255, 0), movable=False)
             self.zeros_poles_scene.addItem(self.x_axis)
             self.zeros_poles_scene.addItem(self.y_axis)
+        phase_response = np.sum(np.array(phase_response),axis = 0)
+        phase_plot =  pg.PlotDataItem(0.5 * freqs / np.pi, phase_response)
+        self.phase_scene.addItem(phase_plot)
 
         return  self.phase_scene,self.mag_scene,self.zeros_poles_scene
 

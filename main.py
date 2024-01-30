@@ -124,15 +124,44 @@ class ZPlaneSignalFilter(QWidget):
             for zero_item in self.zero_items:
                 if np.linalg.norm(np.array(zero_item.pos()) - np.array([pos.x(), pos.y()])) < 0.1:
                     self.plot_widget.removeItem(zero_item)
+                    zero_conj = None
+                    for z in self.list_pairs_zeros:
+                        if id(z[0]) == id(zero_item):
+                            zero_conj = z[1]
+                            break
+                        elif id(z[1]) == id(zero_item):
+                            zero_conj = z[0]
+                            break
+                    if zero_conj is not None:
+                        self.plot_widget.removeItem(zero_conj)
+                        index_conj = find_nearest(self.zerosf, (pos.x(), -pos.y()))
+                        self.zero_itemsf.remove(zero_conj)
+                        self.zerosf.pop(index_conj)
                     index = find_nearest(self.zeros, (pos.x(), pos.y()))
+                    
                     self.zero_items.remove(zero_item)
+                    
                     self.zeros.pop(index)
+                    
                     break
 
             try:
                 for pole_item in self.pole_items:
                     if np.linalg.norm(np.array(pole_item.pos()) - np.array([pos.x(), pos.y()])) < 0.1:
                         self.plot_widget.removeItem(pole_item)
+                        pole_conj = None
+                        for z in self.list_pairs_poles:
+                            if id(z[0]) == id(pole_item):
+                                pole_conj = z[1]
+                                break
+                            elif id(z[1]) == id(pole_item):
+                                pole_conj = z[0]
+                                break
+                        if pole_conj is not None:
+                            self.plot_widget.removeItem(pole_conj)
+                            index_conj = find_nearest(self.polesf, (pos.x(), -pos.y()))
+                            self.pole_itemsf.remove(pole_conj)
+                            self.polesf.pop(index_conj)
                         index = find_nearest(self.poles, (pos.x(), pos.y()))
                         self.pole_items.remove(pole_item)
                         self.poles.pop(index)
