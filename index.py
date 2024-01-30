@@ -6,6 +6,7 @@ from main import ZPlaneSignalFilter
 import pyqtgraph as pg
 import numpy as np
 import sys
+import random
 from pathlib import Path
 from res_rc import *  # Import the resource module
 
@@ -182,6 +183,9 @@ class MainApp(QMainWindow, ui):
 
     def mouseMoveEvent(self, event):
         # Update mouse coordinates
+        if self.mouseX == 0:
+            self.clear_graph()
+
         pos = event.pos()
         self.prevMouseX = self.mouseX
         self.prevMouseY = self.mouseY
@@ -227,7 +231,7 @@ class MainApp(QMainWindow, ui):
         self.unfiltered_plot_widget.clear()
         self.curve = self.unfiltered_plot_widget.plot(pen='r')
         self.accumulated_signal = []
-
+        self.mouseX = 0
 
 def main():
     app = QApplication(sys.argv)
