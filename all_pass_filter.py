@@ -31,6 +31,12 @@ class AllPassFilterFeature(object):
             self.zeros_poles_scene.addItem(poles)
             self.zeros_poles_scene.addItem(zeros)
             self.zeros_poles_scene.addItem(circle)
+            self.zeros_poles_scene.setBackground((25, 35, 45))
+            self.x_axis = pg.InfiniteLine(pos=0, angle=0, pen=(255, 0, 0), movable=False)
+            self.y_axis = pg.InfiniteLine(pos=0, angle=90, pen=(0, 255, 0), movable=False)
+            self.zeros_poles_scene.addItem(self.x_axis)
+            self.zeros_poles_scene.addItem(self.y_axis)
+
         return  self.phase_scene,self.mag_scene,self.zeros_poles_scene
 
     def apply_filters(self, filter):
@@ -85,14 +91,14 @@ class AllPassFilter:
         # win.plot(self.poles.real, self.poles.imag, symbol='x', pen=None, name='Poles')
         # win.addLine(x=0, pen=pg.mkPen('k', width=0.8, style=pg.QtCore.Qt.DashLine))
         # win.addLine(y=0, pen=pg.mkPen('k', width=0.8, style=pg.QtCore.Qt.DashLine))
-        zeros_plot = pg.PlotDataItem(self.zeros.real, self.zeros.imag, symbol='o', pen=None)
-        poles_plot = pg.PlotDataItem(self.poles.real, self.poles.imag, symbol='x', pen=None)
+        zeros_plot = pg.PlotDataItem(self.zeros.real, self.zeros.imag,size=15, symbol='o', pen='g', brush='g')
+        poles_plot = pg.PlotDataItem(self.poles.real, self.poles.imag,size=15, symbol='x', pen='w', brush='w')
         # Plot unit circle
         theta = np.linspace(0, 2 * np.pi, 100)
         x_circle = np.cos(theta)
         y_circle = np.sin(theta)
         # win.plot(x_circle, y_circle, pen=pg.mkPen('g', width=1.5), name='Unit Circle')
-        circle = pg.PlotDataItem(x_circle, y_circle, pen=pg.mkPen('g', width=1.5))
+        circle = pg.PlotDataItem(x_circle, y_circle, pen=pg.mkPen((0, 0, 255), width=1.5))
 
         return poles_plot,zeros_plot,circle
 

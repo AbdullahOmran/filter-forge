@@ -20,13 +20,12 @@ class ZPlaneSignalFilter(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        # Create layout
-        self.layout = QVBoxLayout()
+
         # Create the plot widget
         self.plot_widget = self.unit_circle_w
         self.plot_widget.setAspectLocked()
         self.plot_widget.showGrid(x=False, y=False)
-
+        self.plot_widget.setBackground((25, 35, 45))
         # Draw the unit circle as a CircleROI
         self.unit_circle = pg.CircleROI([-1, -1], size=[2, 2], movable=False, pen=(0, 0, 255))
         self.plot_widget.addItem(self.unit_circle)
@@ -36,9 +35,6 @@ class ZPlaneSignalFilter(QWidget):
         self.y_axis = pg.InfiniteLine(pos=0, angle=90, pen=(0, 255, 0), movable=False)
         self.plot_widget.addItem(self.x_axis)
         self.plot_widget.addItem(self.y_axis)
-
-        # Add the plot widget to the layout
-        self.layout.addWidget(self.plot_widget)
 
         # Initialize lists for zeros, poles, and their corresponding items
         self.zeros = []
@@ -58,40 +54,7 @@ class ZPlaneSignalFilter(QWidget):
 
         # Connect signals
         self.plot_widget.scene().sigMouseClicked.connect(self.on_click)
-        self.plot_widget.scene().sigMouseClicked.connect(self.on_double_click)
-
-        # Add buttons for clearing zeros, poles, and plotting frequency response
-        self.clear_all_button = QPushButton('Clear Zeros and Poles', self)
-        self.clear_all_button.clicked.connect(self.clear_zeros_and_poles)
-        self.layout.addWidget(self.clear_all_button)
-
-        self.clear_poles_button = QPushButton('Clear Poles', self)
-        self.clear_poles_button.clicked.connect(self.clear_poles)
-        self.layout.addWidget(self.clear_poles_button)
-
-        self.clear_zeros_button = QPushButton('Clear Zeros', self)
-        self.clear_zeros_button.clicked.connect(self.clear_zeros)
-        self.layout.addWidget(self.clear_zeros_button)
-
-        self.plot_response_button = QPushButton('Plot Frequency Response', self)
-        self.plot_response_button.clicked.connect(self.plot_frequency_response)
-        self.layout.addWidget(self.plot_response_button)
-
-        # Add checkbox for reflection around x-axis
-        
-        self.layout.addWidget(self.reflect_checkbox)
-
-        # Add buttons for opening CSV file and showing original/filtered signals
-        self.open_file_button = QPushButton('Open CSV Signal File', self)
-        self.open_file_button.clicked.connect(self.load_signal_from_file)
-        self.layout.addWidget(self.open_file_button)
-
-        self.show_signals_button = QPushButton('Show Original and Filtered Signals', self)
-        self.show_signals_button.clicked.connect(self.digital_filter)
-        self.layout.addWidget(self.show_signals_button)
-
-        # Set layout for the main window
-        self.setLayout(self.layout)
+        self.plot_widget.scene().sigMouseClicked.connect(self.clear_zero_or_pole)
 
         # Initialize signal data
         self.t = None
@@ -104,6 +67,7 @@ class ZPlaneSignalFilter(QWidget):
             elif id(z[1]) == zero_addr:
                 z[0].setPos((e.pos().x(), -1 * e.pos().y()))
 
+
     def pole_moved(self, pole_addr, e):
         for z in self.list_pairs_poles:
             if id(z[0]) == pole_addr:
@@ -111,13 +75,16 @@ class ZPlaneSignalFilter(QWidget):
             elif id(z[1]) == pole_addr:
                 z[0].setPos((e.pos().x(), -1 * e.pos().y()))
 
+
     def update_zero_position(self, zero_item, e):
         index = self.zero_items.index(zero_item)
         self.zeros[index] = (e.pos().x(), -1 * e.pos().y())
+        self.plot_frequency_response()
 
     def update_pole_position(self, pole_item, e):
         index = self.pole_items.index(pole_item)
         self.poles[index] = (e.pos().x(), -1 * e.pos().y())
+        self.plot_frequency_response()
 
     def on_click(self, event):
         pos = self.plot_widget.getViewBox().mapSceneToView(event.scenePos())
@@ -142,24 +109,38 @@ class ZPlaneSignalFilter(QWidget):
                 self.plot_zero(pos.x(), pos.y())
         self.plot_frequency_response()
 
-    def on_double_click(self, event):
-        if event.double() == True:
+    def clear_zero_or_pole(self, event):
+        if event.button() == Qt.MiddleButton:
             pos = self.plot_widget.getViewBox().mapSceneToView(event.scenePos())
 
-            # Check if the double click is near any zero or pole
+            def find_nearest(coords_list, target):
+                # Calculate the distances between each coordinate in the list and the target
+                distances = [np.linalg.norm(np.array(coord) - np.array(target)) for coord in coords_list]
+                # Find the index of the coordinate with the minimum distance
+                min_index = np.argmin(distances)
+                return min_index
+
+            # Check if the pulley click is near any zero or pole
             for zero_item in self.zero_items:
                 if np.linalg.norm(np.array(zero_item.pos()) - np.array([pos.x(), pos.y()])) < 0.1:
                     self.plot_widget.removeItem(zero_item)
+                    index = find_nearest(self.zeros, (pos.x(), pos.y()))
                     self.zero_items.remove(zero_item)
-                    self.zeros.remove((pos.x(), pos.y()))
+                    self.zeros.pop(index)
                     break
 
-            for pole_item in self.pole_items:
-                if np.linalg.norm(np.array(pole_item.pos()) - np.array([pos.x(), pos.y()])) < 0.1:
-                    self.plot_widget.removeItem(pole_item)
-                    self.pole_items.remove(pole_item)
-                    self.poles.remove((pos.x(), pos.y()))
-                    break
+            try:
+                for pole_item in self.pole_items:
+                    if np.linalg.norm(np.array(pole_item.pos()) - np.array([pos.x(), pos.y()])) < 0.1:
+                        self.plot_widget.removeItem(pole_item)
+                        index = find_nearest(self.poles, (pos.x(), pos.y()))
+                        self.pole_items.remove(pole_item)
+                        self.poles.pop(index)
+                        break
+            except ValueError:
+                print(f"Coordinates {pos.x(), pos.y()} not found in the list of poles.")
+
+            self.plot_frequency_response()
 
     def clear_zeros_and_poles(self):
         for zero_item in self.zero_items:
@@ -257,26 +238,13 @@ class ZPlaneSignalFilter(QWidget):
         plot = pg.PlotDataItem(frequencies,magnitude)
         self.mag_res_w.clear()
         self.mag_res_w.addItem(plot)
-        
-        # plt.title('Frequency Response - Magnitude')
-        # plt.xlabel('Frequency [radians/sample]')
-        # plt.ylabel('Magnitude')
 
-        # Plot the phase response
-        # plt.subplot(2, 1, 2)
         phase = np.angle(response)
         if np.any(np.iscomplex(phase)):
             phase = np.angle(response.astype(float))  # Cast to float to remove complex part
-        # plt.plot(frequencies, phase)
         plot = pg.PlotDataItem(frequencies,phase)
         self.phase_res_w.clear()
         self.phase_res_w.addItem(plot)
-        # plt.title('Frequency Response - Phase')
-        # plt.xlabel('Frequency [radians/sample]')
-        # plt.ylabel('Phase [radians]')
-
-        # plt.tight_layout()
-        # plt.show()
 
     def load_signal_from_file(self):
         options = QFileDialog.Options()
@@ -376,22 +344,4 @@ class ZPlaneSignalFilter(QWidget):
 
         return output_signal
 
-    # def plot_original_signal(self):
-    #     plt.figure(figsize=(10, 6))
-    #     plt.plot(self.t, self.x, label='Original Signal')
-    #     plt.xlabel('Time')
-    #     plt.ylabel('Amplitude')
-    #     plt.legend()
-    #     plt.show()
 
-# if __name__ == '__main__':
-#     app = QApplication(sys.argv)
-#     window = QMainWindow()
-#     central_widget = ZPlaneSignalFilter()
-#     window.setCentralWidget(central_widget)
-
-#     window.setGeometry(100, 100, 800, 600)
-#     window.setWindowTitle('Z-Plane Plotter with Signal Filter')
-#     window.show()
-
-#     sys.exit(app.exec_())

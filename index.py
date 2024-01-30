@@ -56,22 +56,10 @@ class MainApp(QMainWindow, ui):
 
 
         # Objects : signal
-        
+
         self.unfiltered_signal_plot = sv.PlotSignal()
         self.filtered_signal_plot = sv.PlotSignal()
 
-        
-        # self.response_graphics_views = [
-        #     self.magnitude_response_view,
-        #     self.phase_response_view,
-        #     self.all_pass_phase_response
-        # ]
-
-        # self.response_graphics_view = [
-        #         ["phase_response_plot_widget", "Frequency (Hz)", "Phase (degrees)", "Phase Response"],
-        #         ["magnitude_response_plot_widget", "Frequency (Hz)", "Magnitude (degrees)", "Magnitude Response"],
-        #         ["all_pass_phase_response_plot_widget", "Frequency (Hz)", "Phase (degrees)", "All Pass Phase Response"]
-        # ]
         self.unit_circle_graphics_views = [
             self.unite_circle,
             self.all_pass_unite_circle
@@ -85,15 +73,17 @@ class MainApp(QMainWindow, ui):
             self.unfiltered_signal_view, "unfiltered_plot_widget", "Time (sec)",
             "Amplitude","UnFiltered Signal", self.unfiltered_signal_plot
         )
-        self.all_pass_phase_plot_widget, xxx = create_plot_widget(
-            self.all_pass_phase_response,"all_pass_phase_response_plot_widget","Frequency (Hz)", "Phase (degrees)",
+        # self.unfiltered_signal_viewer.linkTo(self.filtered_signal_viewer)
+
+        self.all_pass_phase_plot_widget, _ = create_plot_widget(
+            self.all_pass_phase_response, "all_pass_phase_response_plot_widget", "Frequency (Hz)", "Phase (degrees)",
             "All Pass Phase Response"
         )
-        self.magnitude_plot_widget, self.xx_signal_viewer = create_plot_widget(
+        self.magnitude_plot_widget, _ = create_plot_widget(
             self.magnitude_response_view, "magnitude_response_plot_widget", "Frequency (Hz)", "Magnitude (degrees)",
             "Magnitude Response"
         )
-        self.phase_plot_widget, self.xx_signal_viewer = create_plot_widget(
+        self.phase_plot_widget, _ = create_plot_widget(
             self.phase_response_view, "phase_response_plot_widget", "Frequency (Hz)", "Phase (degrees)",
             "Phase Response"
         )
@@ -159,6 +149,19 @@ class MainApp(QMainWindow, ui):
         self.clear_zeros_btn.clicked.connect(self.z_plane_signal_filter.clear_zeros)
         self.clear_poles_btn.clicked.connect(self.z_plane_signal_filter.clear_poles)
         self.clear_all_btn.clicked.connect(self.z_plane_signal_filter.clear_zeros_and_poles)
+        self.import_btn.clicked.connect(self.open_signal)
+
+    def open_signal(self):
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getOpenFileName(self, 'Open Signal to Equalizer', '',
+                                                       '*.csv', options=options)
+
+        self.clear_graph()
+        self.unfiltered_signal_viewer.load_dataset(file_name)
+        self.unfiltered_signal_viewer.add_signal()
+        self.play_pause_state = False
+        self.play_pause_btn.setIcon(QIcon(f'icons/pause copy.svg'))
+
 
     def show_all_pass_filter(self):
         checked_items = []

@@ -83,7 +83,7 @@ class SignalViewerLogic(object):
         self._rate = 10  # samples per second
         self.timer.start(int(1000 / self._rate))  # The delay that the draw method takes for each call
         self.view_width = 1000  # initial width
-        self.view_height = 1 # initial height
+        self.view_height = 10 # initial height
         self._xRange = [0, self.view_width]
         self._yRange = [- self.view_height, self.view_height]
         self._display_axis = True
