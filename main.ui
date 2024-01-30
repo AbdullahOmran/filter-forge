@@ -468,7 +468,7 @@ QProgressBar::chunk{
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="clear_zeros">
+                    <widget class="QPushButton" name="clear_zeros_btn">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -476,12 +476,22 @@ QProgressBar::chunk{
                       </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>Clear Zeros</string>
+                      <string> Zeros</string>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>icons/bin.png</normaloff>icons/bin.png</iconset>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>30</width>
+                       <height>30</height>
+                      </size>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="clear_poles">
+                    <widget class="QPushButton" name="clear_poles_btn">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -489,14 +499,34 @@ QProgressBar::chunk{
                       </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>Clear Poles</string>
+                      <string>Poles</string>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>icons/bin.png</normaloff>icons/bin.png</iconset>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>30</width>
+                       <height>30</height>
+                      </size>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton">
+                    <widget class="QPushButton" name="clear_all_btn">
                      <property name="text">
-                      <string>Plot</string>
+                      <string>All</string>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>icons/bin.png</normaloff>icons/bin.png</iconset>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>30</width>
+                       <height>30</height>
+                      </size>
                      </property>
                     </widget>
                    </item>
@@ -690,27 +720,6 @@ QProgressBar::chunk{
                  </property>
                 </widget>
                </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_5">
-                 <item>
-                  <widget class="QLabel" name="label">
-                   <property name="text">
-                    <string>Filter Rate</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSlider" name="horizontalSlider">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLCDNumber" name="lcdNumber"/>
-                 </item>
-                </layout>
-               </item>
               </layout>
              </widget>
             </item>
@@ -834,22 +843,5 @@ color: rgb(0,0,0);</string>
   </widget>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber</receiver>
-   <slot>display(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>731</x>
-     <y>801</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>892</x>
-     <y>805</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

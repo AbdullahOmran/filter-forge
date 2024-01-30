@@ -179,6 +179,8 @@ class ZPlaneSignalFilter(QWidget):
         self.poles = []
         self.polesf = []
         self.pole_itemsf = []
+        self.mag_res_w.clear()
+        self.phase_res_w.clear()
 
     def clear_poles(self):
         for pole_item in self.pole_items:
@@ -189,6 +191,7 @@ class ZPlaneSignalFilter(QWidget):
         self.poles = []
         self.polesf = []
         self.pole_itemsf = []
+        self.plot_frequency_response()
 
     def clear_zeros(self):
         for zero_item in self.zero_items:
@@ -199,6 +202,7 @@ class ZPlaneSignalFilter(QWidget):
         self.zeros = []
         self.zerosf = []
         self.zero_itemsf = []
+        self.plot_frequency_response()
 
     def plot_pole(self, x, y):
         target_pole = pg.TargetItem(pos=[x, y], size=20, symbol='x', pen='w', brush='w', movable=True)

@@ -82,23 +82,23 @@ class SignalViewerLogic(object):
         self.signal = None  # storing loaded signals from the file
         self._rate = 10  # samples per second
         self.timer.start(int(1000 / self._rate))  # The delay that the draw method takes for each call
-        self.view_width = 350e3  # initial width
-        self.view_height = 6e4  # initial height
+        self.view_width = 1000  # initial width
+        self.view_height = 1 # initial height
         self._xRange = [0, self.view_width]
         self._yRange = [- self.view_height, self.view_height]
         self._display_axis = True
         self._display_grid = True
-        self.view.setXRange(self._xRange[0], self._xRange[1], padding=0)
-        self.view.setYRange(self._yRange[0], self._yRange[1], padding=0)
+        # self.view.setXRange(self._xRange[0], self._xRange[1], padding=0)
+        # self.view.setYRange(self._yRange[0], self._yRange[1], padding=0)
         self.display_grid = True
         self.display_axis = True
-        self._apply_limits = True
+        self._apply_limits = False
         self._background_color = (25, 35, 45)
         self.background_color = self._background_color
         self._display_axis_labels = True
         self.display_axis_labels = True
         self.view_limits = []
-        self.apply_limits = True
+        self.apply_limits = False
 
     @property
     def background_color(self):
