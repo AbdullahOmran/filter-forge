@@ -1,6 +1,7 @@
 from turtle import color
 from PyQt5.QtCore import QTimer
 import numpy as np
+import pandas as pd
 import pyqtgraph as pg
 import random
 import pyqtgraph.exporters
@@ -189,8 +190,9 @@ class SignalViewerLogic(object):
     def set_title(self, title: str):
         self.view.setTitle(title)
 
-    def load_dataset(self, signal: np.ndarray) -> None:
-        self.signal = PlotSignal(data=signal)
+    def load_dataset(self, filename: str) -> None:
+        data = pd.read_csv(filename).to_numpy().tolist()
+        self.signal = PlotSignal(data=data)
 
     # deprecated methods
     '''def zoom_in(self,scale: int)-> None:

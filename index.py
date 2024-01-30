@@ -160,7 +160,7 @@ class MainApp(QMainWindow, ui):
         self.unfiltered_signal_viewer.load_dataset(file_name)
         self.unfiltered_signal_viewer.add_signal()
         self.play_pause_state = False
-        self.play_pause_btn.setIcon(QIcon(f'icons/pause copy.svg'))
+        # self.play_pause_btn.setIcon(QIcon(f'icons/pause copy.svg'))
 
 
     def show_all_pass_filter(self):
