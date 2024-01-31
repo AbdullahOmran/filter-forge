@@ -15,7 +15,7 @@ import urllib.request
 import os
 from os import path
 import SignalViewer as sv
-from all_pass_filter import AllPassFilter, AllPassFilterFeature
+from all_pass_filter import AllPassFilter, AllPassFilterFeature, OnlineFilter
 
 ui, _ = loadUiType('main.ui')
 def create_plot_widget(graphics_view, object_name="", bottom_label="", left_label="", signal_viewer_title=None,
@@ -151,6 +151,8 @@ class MainApp(QMainWindow, ui):
         self.clear_all_btn.clicked.connect(self.z_plane_signal_filter.clear_zeros_and_poles)
         self.import_btn.clicked.connect(self.open_signal)
 
+        
+
     def open_signal(self):
         options = QFileDialog.Options()
         file_name, _ = QFileDialog.getOpenFileName(self, 'Open Signal to Equalizer', '',
@@ -169,10 +171,13 @@ class MainApp(QMainWindow, ui):
             item = self.all_pass_list_widget.item(i)
             if item.checkState() == Qt.Checked:
                 checked_items.append(self.all_pass_list[i])
-        print(checked_items)
+        #print(checked_items)
         self.filters = [AllPassFilter(a) for a in checked_items]
         self.feature = AllPassFilterFeature(filters=self.filters, phase_w=self.all_pass_phase_plot_widget,
                                             poles_zeros_w=self.all_pass_unit_circle_widget)
+        f = OnlineFilter([1,1],self.z_plane_signal_filter,self.filters)
+        x = f.apply_filter()
+        x = f.apply_filter()
         self.feature.get_scene()
 
     def handleItemClicked(self, item):

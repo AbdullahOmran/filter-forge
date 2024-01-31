@@ -251,7 +251,7 @@ class ZPlaneSignalFilter(QWidget):
     def plot_frequency_response(self):
         zeros = [complex(z[0], z[1]) for z in self.zeros]
         poles = [complex(p[0], p[1]) for p in self.poles]
-        self.plot_response(zeros, poles)
+        return self.plot_response(zeros, poles)
 
     def plot_response(self, zeros, poles):
         # Generate frequencies for the frequency range
@@ -274,6 +274,7 @@ class ZPlaneSignalFilter(QWidget):
         plot = pg.PlotDataItem(frequencies,phase)
         self.phase_res_w.clear()
         self.phase_res_w.addItem(plot)
+        return frequencies,phase
 
     def load_signal_from_file(self):
         options = QFileDialog.Options()
@@ -287,10 +288,10 @@ class ZPlaneSignalFilter(QWidget):
             self.x = data[0,: ]
             # self.clear_zeros_and_poles()
 
-    def show_original_and_filtered_signals(self):
-        pass
-        # if self.t is not None and self.x is not None:
-        #     b, a = freqz_zpk(self.zeros, self.poles, k=1)
+    # def show_original_and_filtered_signals(self):
+    #     pass
+    #     # if self.t is not None and self.x is not None:
+    #     #     b, a = freqz_zpk(self.zeros, self.poles, k=1)
         #     # print(b)
         #     # print()
         #     # b=b[:,1]
@@ -324,53 +325,53 @@ class ZPlaneSignalFilter(QWidget):
         # plt.grid(True)
         # plt.show()
 
-    def digital_filter(self):
-        # Extract coefficients from zeros and poles
-        # print(self.zeros)
-        zero_flatten = list(chain(*self.zeros))
-        # print(zero_flatten)
-        pole_flatten = list(chain(*self.poles))
-        b = np.poly(zero_flatten)
-        a = np.poly(pole_flatten)
+    # def digital_filter(self):
+        # # Extract coefficients from zeros and poles
+        # # print(self.zeros)
+        # zero_flatten = list(chain(*self.zeros))
+        # # print(zero_flatten)
+        # pole_flatten = list(chain(*self.poles))
+        # b = np.poly(zero_flatten)
+        # a = np.poly(pole_flatten)
 
-        # Initialize state variables
-        x_history = np.zeros(len(b))
+        # # Initialize state variables
+        # x_history = np.zeros(len(b))
 
-        if np.isscalar(a):  # Check if 'a' is a scalar (float)
-            y_history = np.zeros(0)
-        else:
-            y_history = np.zeros(len(a) - 1)
+        # if np.isscalar(a):  # Check if 'a' is a scalar (float)
+        #     y_history = np.zeros(0)
+        # else:
+        #     y_history = np.zeros(len(a) - 1)
 
-        # Apply the filter
-        output_signal = []
-        for sample in self.x:
-            # Update state variables
-            x_history[1:] = x_history[:-1]
-            x_history[0] = sample
+        # # Apply the filter
+        # output_signal = []
+        # for sample in self.x:
+        #     # Update state variables
+        #     x_history[1:] = x_history[:-1]
+        #     x_history[0] = sample
 
-            # Calculate output using the difference equation
-            y = np.dot(b, x_history)
+        #     # Calculate output using the difference equation
+        #     y = np.dot(b, x_history)
 
-            if not np.isscalar(a):
-                y -= np.dot(a[1:], y_history)
+        #     if not np.isscalar(a):
+        #         y -= np.dot(a[1:], y_history)
 
-                # Update y_history
-                y_history[1:] = y_history[:-1]
-                y_history[0] = y
+        #         # Update y_history
+        #         y_history[1:] = y_history[:-1]
+        #         y_history[0] = y
 
-            output_signal.append(y)
+            # output_signal.append(y)
 
-        # Plot the original and filtered signals
-        plt.figure(figsize=(10, 6))
-        plt.plot(self.x, label='Original Signal')
-        plt.plot(output_signal, label='Filtered Signal')
-        plt.xlabel('Sample Index')
-        plt.ylabel('Amplitude')
-        plt.title('Original and Filtered Signals')
-        plt.legend()
-        plt.grid(True)
-        plt.show()
+        # # Plot the original and filtered signals
+        # plt.figure(figsize=(10, 6))
+        # plt.plot(self.x, label='Original Signal')
+        # plt.plot(output_signal, label='Filtered Signal')
+        # plt.xlabel('Sample Index')
+        # plt.ylabel('Amplitude')
+        # plt.title('Original and Filtered Signals')
+        # plt.legend()
+        # plt.grid(True)
+        # plt.show()
 
-        return output_signal
+        # return output_signal
 
-
+    
