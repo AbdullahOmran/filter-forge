@@ -69,12 +69,12 @@ class AllPassFilter:
         return (z**-1 - self.a) / (1 - self.a * z**-1)
     def get_freq_response(self):
                 # Frequency response
-        frequencies, response = freqz([-np.conjugate(self.a), 1], [1, -self.a], worN=8000)
+        frequencies, response = freqz([-np.conjugate(self.a), 1], [1, -self.a], worN=512)
         return frequencies, response
 
     def get_frequency_response_plots(self):
         # Frequency response
-        frequencies, response = freqz([-np.conjugate(self.a), 1], [1, -self.a], worN=8000)
+        frequencies, response = freqz([-np.conjugate(self.a), 1], [1, -self.a], worN=512)
         
         # Plot magnitude response
 
@@ -110,7 +110,7 @@ class AllPassFilter:
 
     def calculate_phase_response(self):
         # Calculate phase response at different frequencies
-        frequencies, response = freqz([-np.conjugate(self.a), 1], [1, -self.a], worN=8000)
+        frequencies, response = freqz([-np.conjugate(self.a), 1], [1, -self.a], worN=512)
         phase_values = np.angle(response)
         return 0.5 * frequencies / np.pi, phase_values
 
@@ -284,6 +284,7 @@ class OnlineFilter(object):
             wighted_output = np.dot(np.array(self._outputs), self.H_denominator_poly[1:])
             leading_coefficient = self.H_denominator_poly[0]
             self.current_filtered_sample = (wighted_input - wighted_output)/leading_coefficient
+            self.current_filtered_sample = self.current_filtered_sample.astype(float)
             self.filtered_signal.append(self.current_filtered_sample)
     
 

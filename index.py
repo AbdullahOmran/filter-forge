@@ -46,7 +46,7 @@ class MainApp(QMainWindow, ui):
         self.resize(1500, 900)
         self.z_plane_signal_filter  = None
 
-        self.all_pass_list = [15, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        self.all_pass_list = [0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.10]
         for i in range(len(self.all_pass_list)):
 
             list_item = QListWidgetItem(f"a = {self.all_pass_list[i]}")
@@ -150,7 +150,8 @@ class MainApp(QMainWindow, ui):
         self.clear_poles_btn.clicked.connect(self.z_plane_signal_filter.clear_poles)
         self.clear_all_btn.clicked.connect(self.z_plane_signal_filter.clear_zeros_and_poles)
         self.import_btn.clicked.connect(self.open_signal)
-
+        self.apply_all_pass_filter_btn.clicked.connect(self.apply_all_pass_filter)
+        self.online_filter = OnlineFilter(self.accumulated_signal,self.z_plane_signal_filter)
         
 
     def open_signal(self):
@@ -175,10 +176,12 @@ class MainApp(QMainWindow, ui):
         self.filters = [AllPassFilter(a) for a in checked_items]
         self.feature = AllPassFilterFeature(filters=self.filters, phase_w=self.all_pass_phase_plot_widget,
                                             poles_zeros_w=self.all_pass_unit_circle_widget)
-        f = OnlineFilter([1,1],self.z_plane_signal_filter,self.filters)
-        x = f.apply_filter()
-        x = f.apply_filter()
         self.feature.get_scene()
+
+    def apply_all_pass_filter(self):
+        self.online_filter.all_pass_filters = self.filters
+        self.phase_plot_widget.clear()
+        self.phase_plot_widget.addItem(self.feature.get_corrected_phase_plot(self.z_plane_signal_filter))
 
     def handleItemClicked(self, item):
         # Toggle the check state when an item is clicked
@@ -212,7 +215,12 @@ class MainApp(QMainWindow, ui):
             # Accumulate the signal based on the movement
             self.accumulated_signal.extend(amplitude * np.sin(
                 0.02 * np.arange(len(self.accumulated_signal), len(self.accumulated_signal) + 100)) * direction)
-
+            self.online_filter.signal = self.accumulated_signal
+            for i in range(10):
+                self.online_filter.apply_filter()
+            filtered_sig_plot = pg.PlotDataItem(self.online_filter.filtered_signal)
+            self.filtered_plot_widget.clear()
+            self.filtered_plot_widget.addItem(filtered_sig_plot)
             # Update the plot
             self.curve.setData(y=self.accumulated_signal)
             self.mouse_moving = False
