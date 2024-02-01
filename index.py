@@ -216,7 +216,7 @@ class MainApp(QMainWindow, ui):
             self.accumulated_signal.extend(amplitude * np.sin(
                 0.02 * np.arange(len(self.accumulated_signal), len(self.accumulated_signal) + 100)) * direction)
             self.online_filter.signal = self.accumulated_signal
-            for i in range(10):
+            for i in range(100):
                 self.online_filter.apply_filter()
             filtered_sig_plot = pg.PlotDataItem(self.online_filter.filtered_signal)
             self.filtered_plot_widget.clear()

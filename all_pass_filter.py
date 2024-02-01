@@ -265,7 +265,7 @@ class OnlineFilter(object):
         if not self.is_consumed:
             self.current_sample_index += 1
             # Handle right-hand side of the difference equation
-            if len(self._inputs) >= self.nzeros+1 and len(self._inputs) != 0:
+            while len(self._inputs) >= self.nzeros+1 and len(self._inputs) != 0:
                 self._inputs.pop()
             self._inputs.insert(0,self.current_sample)
             # zero padding for the inputs
@@ -274,7 +274,7 @@ class OnlineFilter(object):
             wighted_input = np.dot(np.array(self._inputs), self.H_numerator_poly)
             
             # Handle left-hand side of the difference equation
-            if len(self._outputs) >= self.npoles and len(self._outputs) != 0:
+            while len(self._outputs) >= self.npoles and len(self._outputs) != 0:
                 self._outputs.pop()
 
             self._outputs.insert(0,self.current_filtered_sample)
