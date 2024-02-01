@@ -289,4 +289,15 @@ class OnlineFilter(object):
             self.current_filtered_sample = self.current_filtered_sample.astype(float)
             self.filtered_signal.append(self.current_filtered_sample)
     
+    def reset(self):
+        self._current_sample_index = -1
+        self._current_sample = None
+        self._current_filtered_sample = 0
+        self._filtered_signal = []
+        self._H_numerator_poly = []
+        self._H_denominator_poly = []
+        self._is_consumed = True if len(self.signal) == 0 else False
+        self._inputs = []
+        self._outputs = []
+    
 
