@@ -1,9 +1,12 @@
 from turtle import color
 from PyQt5.QtCore import QTimer
 import numpy as np
+import pandas as pd
 import pyqtgraph as pg
 import random
 import pyqtgraph.exporters
+
+
 # from Equalizer import Signal
 
 class PlotSignal(object):
@@ -41,16 +44,16 @@ class PlotSignal(object):
             # self.current_sample = self.data[self.current_sample_index]
             # self.plotted_data.append(self.current_sample)
             # self.current_sample_index += 1
-            if 4410*(self.current_sample_index+1) < len(self.data):
-                self.current_sample = self.data[4410*self.current_sample_index:4410*(self.current_sample_index+1)]
-                self.plotted_data = np.append(self.plotted_data,self.current_sample)
+            if 4410 * (self.current_sample_index + 1) < len(self.data):
+                self.current_sample = self.data[4410 * self.current_sample_index:4410 * (self.current_sample_index + 1)]
+                self.plotted_data = np.append(self.plotted_data, self.current_sample)
                 self.current_sample_index += 1
             else:
-                self.current_sample = self.data[4410*self.current_sample_index:]
-                self.plotted_data = np.append(self.plotted_data,self.current_sample)
+                self.current_sample = self.data[4410 * self.current_sample_index:]
+                self.plotted_data = np.append(self.plotted_data, self.current_sample)
                 self.current_sample_index += 1
 
-            if 4410*(self.current_sample_index+1) > len(self.data):
+            if 4410 * (self.current_sample_index + 1) > len(self.data):
                 self.completed = True
                 self.stop_drawing = True
                 self.is_active = False
@@ -83,7 +86,7 @@ class SignalViewerLogic(object):
         self._rate = 10  # samples per second
         self.timer.start(int(1000 / self._rate))  # The delay that the draw method takes for each call
         self.view_width = 1000  # initial width
-        self.view_height = 10 # initial height
+        self.view_height = 10  # initial height
         self._xRange = [0, self.view_width]
         self._yRange = [- self.view_height, self.view_height]
         self._display_axis = True
@@ -189,8 +192,9 @@ class SignalViewerLogic(object):
     def set_title(self, title: str):
         self.view.setTitle(title)
 
-    def load_dataset(self, signal: np.ndarray) -> None:
-        self.signal = PlotSignal(data=signal)
+    def load_dataset(self, filename: str) -> None:
+        data = pd.read_csv(filename).to_numpy().tolist()
+        self.signal = PlotSignal(data=data)
 
     # deprecated methods
     '''def zoom_in(self,scale: int)-> None:
@@ -200,7 +204,7 @@ class SignalViewerLogic(object):
         f = 1/scale
         self.view.scaleBy(s = (f,f))
 
-    
+
 
     def zoom(self,scale: int)-> None:
         v = self.view.getViewBox()
@@ -330,8 +334,6 @@ class SignalViewerLogic(object):
                     self.horizontal_shift(1)
                 self.signal.advance()
                 self.signal.plot()
-
-
 
     # add signal to the plotted signal and active signals and start drawing it
     def add_signal(self, color=(255, 255, 255)):

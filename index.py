@@ -1,14 +1,16 @@
+import time
+
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QTimer
-from main import ZPlaneSignalFilter
+from ZPlane import ZPlaneSignalFilter
 import pyqtgraph as pg
 import numpy as np
 import sys
 from pathlib import Path
 from res_rc import *  # Import the resource module
-
+import pandas as pd
 from PyQt5.uic import loadUiType
 import urllib.request
 
@@ -44,9 +46,22 @@ class MainApp(QMainWindow, ui):
         QMainWindow.__init__(self)
         self.setupUi(self)
         self.resize(1500, 900)
-        self.z_plane_signal_filter  = None
 
-        self.all_pass_list = [0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.10]
+        self.Timer = QTimer(self)
+        self.Timer.timeout.connect(self.draw_signal)
+
+        self.plotted_signal = []
+        self.curr_sample_index = 0
+        self.curr_sample = 0
+        self.z_plane_signal_filter  = None
+        self.filters = []
+        #
+        # double_validator = QDoubleValidator(0.0, 1.0, 10)  # Arguments: bottom, top, decimals
+        # self.all_pass_lineEdit.setValidator(double_validator)
+
+        self.all_pass_list = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1j+1]
+
+
         for i in range(len(self.all_pass_list)):
 
             list_item = QListWidgetItem(f"a = {self.all_pass_list[i]}")
@@ -76,7 +91,7 @@ class MainApp(QMainWindow, ui):
         # self.unfiltered_signal_viewer.linkTo(self.filtered_signal_viewer)
 
         self.all_pass_phase_plot_widget, _ = create_plot_widget(
-            self.all_pass_phase_response, "all_pass_phase_response_plot_widget", "Frequency (Hz)", "Phase (degrees)",
+            self.all_pass_phase_response, "all_pass_phase_response_plot_widget", "Frequency (rad/sec)", "Phase (degrees)",
             "All Pass Phase Response"
         )
         self.magnitude_plot_widget, _ = create_plot_widget(
@@ -118,7 +133,7 @@ class MainApp(QMainWindow, ui):
         self.view = QGraphicsView(self)
         self.scene = QGraphicsScene(self)
         self.view.setScene(self.scene)
-        self.view.setStyleSheet("background-color: lightGray;")
+        self.view.setStyleSheet("background-color: #19232D ;border: 2px solid #176B87; border-radius: 10px;")
         self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
@@ -135,10 +150,12 @@ class MainApp(QMainWindow, ui):
         self.mouseY = 0
         self.prevMouseX = 0
         self.prevMouseY = 0
-
+        self.t_x = 1
+        self.start_time=0
         # Accumulated signal
         self.accumulated_signal = []
         self.view.mouseMoveEvent = self.mouseMoveEvent
+        self.view.mousePressEvent = self.mousePressEvent
 
 #############################################For Connecting Function###################################################
         self.all_pass_radioButton.clicked.connect(self.toggle_side_bar)
@@ -149,21 +166,36 @@ class MainApp(QMainWindow, ui):
         self.clear_zeros_btn.clicked.connect(self.z_plane_signal_filter.clear_zeros)
         self.clear_poles_btn.clicked.connect(self.z_plane_signal_filter.clear_poles)
         self.clear_all_btn.clicked.connect(self.z_plane_signal_filter.clear_zeros_and_poles)
+        self.clear_all_pass_filter_btn.clicked.connect(self.clear_all_pass_graph)
         self.import_btn.clicked.connect(self.open_signal)
         self.apply_all_pass_filter_btn.clicked.connect(self.apply_all_pass_filter)
-        self.online_filter = OnlineFilter(self.accumulated_signal,self.z_plane_signal_filter)
-        
+        self.online_filter = OnlineFilter(self.accumulated_signal, self.z_plane_signal_filter)
+        self.online_filter2 = OnlineFilter([], self.z_plane_signal_filter)
+
 
     def open_signal(self):
         options = QFileDialog.Options()
-        file_name, _ = QFileDialog.getOpenFileName(self, 'Open Signal to Equalizer', '',
-                                                       '*.csv', options=options)
-
+        file_name, _ = QFileDialog.getOpenFileName(self, 'Open Signal to Equalizer', '', '*.csv', options=options)
+        data = pd.read_csv(file_name).to_numpy().transpose()[1].tolist()
+        self.online_filter2.signal = data
+        self.online_filter2.all_pass_filters = self.filters
         self.clear_graph()
-        self.unfiltered_signal_viewer.load_dataset(file_name)
-        self.unfiltered_signal_viewer.add_signal()
-        self.play_pause_state = False
-        self.play_pause_btn.setIcon(QIcon(f'icons/pause copy.svg'))
+        self.Timer.start(50)  # Set the interval (milliseconds)
+
+    def draw_signal(self):
+
+        if self.curr_sample_index < len(self.online_filter2.signal)-1:
+            self.filtered_plot_widget.clear()
+            self.unfiltered_plot_widget.clear()
+            self.curr_sample_index += 1
+            self.curr_sample = self.online_filter2.signal[self.curr_sample_index]
+            self.plotted_signal.append(self.curr_sample)
+            plot = pg.PlotDataItem(self.plotted_signal)
+            self.unfiltered_plot_widget.addItem(plot)
+            self.online_filter2.apply_filter()
+            plot = pg.PlotDataItem(self.online_filter2.filtered_signal)
+            self.filtered_plot_widget.addItem(plot)
+
 
 
     def show_all_pass_filter(self):
@@ -172,11 +204,14 @@ class MainApp(QMainWindow, ui):
             item = self.all_pass_list_widget.item(i)
             if item.checkState() == Qt.Checked:
                 checked_items.append(self.all_pass_list[i])
+        if self.all_pass_lineEdit.text() != "":
+            checked_items.append(complex(self.all_pass_lineEdit.text()))
         #print(checked_items)
-        self.filters = [AllPassFilter(a) for a in checked_items]
-        self.feature = AllPassFilterFeature(filters=self.filters, phase_w=self.all_pass_phase_plot_widget,
-                                            poles_zeros_w=self.all_pass_unit_circle_widget)
-        self.feature.get_scene()
+        if checked_items:
+            self.filters = [AllPassFilter(a) for a in checked_items]
+            self.feature = AllPassFilterFeature(filters=self.filters, phase_w=self.all_pass_phase_plot_widget,
+                                                poles_zeros_w=self.all_pass_unit_circle_widget)
+            self.feature.get_scene()
 
     def apply_all_pass_filter(self):
         self.online_filter.all_pass_filters = self.filters
@@ -187,6 +222,8 @@ class MainApp(QMainWindow, ui):
         # Toggle the check state when an item is clicked
         current_state = item.checkState()
         item.setCheckState(Qt.Checked if current_state == Qt.Unchecked else Qt.Unchecked)
+    def mousePressEvent(self, e):
+        self.start_time = time.time()
 
     def mouseMoveEvent(self, event):
         # Update mouse coordinates
@@ -195,28 +232,37 @@ class MainApp(QMainWindow, ui):
         self.prevMouseY = self.mouseY
         self.mouseX = pos.x()
         self.mouseY = pos.y()
+        self.t_x = time.time()
         self.mouse_moving = True
 
     def updateGraph(self):
         if self.mouse_moving:
             # Calculate the change in mouse coordinates
             delta_x = self.mouseX - self.prevMouseX
-            delta_y = self.mouseY - self.prevMouseY
+            # delta_y = self.mouseY - self.prevMouseY
 
             # Calculate the distance moved
-            distance = np.sqrt(delta_x ** 2 + delta_y ** 2)
+            # distance = np.sqrt(delta_x ** 2 + delta_y ** 2)
 
             # Calculate the amplitude of the signal based on the distance and direction
-            amplitude = distance   # Adjust the scaling factor as needed
+            amplitude = delta_x   # Adjust the scaling factor as needed
 
             # Determine the direction of movement
             direction = np.sign(delta_x)  # Use the x-direction for simplicity
 
+            delta_t = time.time() - self.t_x
+            v = delta_x / delta_t
+            omega = v/ amplitude
+            curr_t = time.time()
+            x = lambda t: amplitude* np.cos(omega * t)
+            print(delta_x, delta_t,amplitude,omega,x)
             # Accumulate the signal based on the movement
-            self.accumulated_signal.extend(amplitude * np.sin(
-                0.02 * np.arange(len(self.accumulated_signal), len(self.accumulated_signal) + 100)) * direction)
+            self.accumulated_signal.append(x(curr_t-self.start_time))
+
             self.online_filter.signal = self.accumulated_signal
-            for i in range(100):
+
+            for i in range(self.filter_rate_slider.value()):
+
                 self.online_filter.apply_filter()
             filtered_sig_plot = pg.PlotDataItem(self.online_filter.filtered_signal)
             self.filtered_plot_widget.clear()
@@ -237,9 +283,23 @@ class MainApp(QMainWindow, ui):
         self.animation.start()
         self.right_frame.update()
     def clear_graph(self):
+        self.plotted_signal = []
+        self.curr_sample_index = 0
+        self.curr_sample = 0
+        self.Timer.stop()
         self.unfiltered_plot_widget.clear()
+        self.filtered_plot_widget.clear()
+
+        self.online_filter.reset()
+        self.online_filter2.reset()
+
         self.curve = self.unfiltered_plot_widget.plot(pen='r')
         self.accumulated_signal = []
+
+    def clear_all_pass_graph(self):
+        self.all_pass_phase_plot_widget.clear()
+        self.all_pass_unit_circle_widget.clear()
+
 
 
 def main():
