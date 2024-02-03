@@ -245,17 +245,18 @@ class MainApp(QMainWindow, ui):
             # distance = np.sqrt(delta_x ** 2 + delta_y ** 2)
 
             # Calculate the amplitude of the signal based on the distance and direction
-            amplitude = delta_x   # Adjust the scaling factor as needed
+            amplitude = 10  # Adjust the scaling factor as needed
 
             # Determine the direction of movement
             direction = np.sign(delta_x)  # Use the x-direction for simplicity
 
             delta_t = time.time() - self.t_x
             v = delta_x / delta_t
-            omega = v/ amplitude
+            omega = (v/ amplitude)*0.01
             curr_t = time.time()
             x = lambda t: amplitude* np.cos(omega * t)
-            print(delta_x, delta_t,amplitude,omega,x)
+            # print(delta_x, delta_t,amplitude,omega,x(curr_t-self.start_time))
+            print(omega)
             # Accumulate the signal based on the movement
             self.accumulated_signal.append(x(curr_t-self.start_time))
 

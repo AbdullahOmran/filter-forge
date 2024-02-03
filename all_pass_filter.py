@@ -298,8 +298,9 @@ class OnlineFilter(object):
 
             leading_coefficient = self.H_denominator_poly[0]
             self.current_filtered_sample = (wighted_input - wighted_output) / leading_coefficient
-            self.current_filtered_sample = self.current_filtered_sample.astype(float)
+            self.current_filtered_sample = self.current_filtered_sample.real if type(self.current_filtered_sample) == np.complex128 else self.current_filtered_sample
             self.filtered_signal.append(self.current_filtered_sample)
+            
 
     def reset(self):
         self._current_sample_index = -1
