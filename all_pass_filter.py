@@ -44,6 +44,7 @@ class AllPassFilterFeature(object):
 
     def get_corrected_phase_plot(self, filter):
         freqs, phase = filter.plot_frequency_response()
+        filter.phase_res_w.clear()
         corrected_phase = phase + self.phase_response
         return pg.PlotDataItem(freqs, corrected_phase)
 
