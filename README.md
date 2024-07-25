@@ -4,7 +4,7 @@
 
 This project involves implementing a desktop application to help users design custom digital filters through the placement of zeros and poles on the z-plane. The application visualizes the filter's frequency response and allows for real-time filtering of signals.
 <div style="text-align: center;">
-    <img src="assests/appreview.gif" alt="App review" style=" display: block; margin: 0 auto;">
+    <img src="assests/video.gif" alt="App review" style=" display: block; margin: 0 auto;">
 </div>
 
 ## Table of Contents
@@ -28,6 +28,7 @@ This project involves implementing a desktop application to help users design cu
       
 ### Frequency Response Plot
 - Magnitude and Phase Response: Separate plots for magnitude and phase response corresponding to the placed zeros and poles.
+  
  ![Screenshot 3](assests/zplane.png)
 
 ### Real-time Signal Filtering
