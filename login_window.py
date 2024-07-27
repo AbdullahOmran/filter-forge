@@ -3,16 +3,19 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUiType
 from index import MainApp
-
+from conf import api
 
 
 login_ui, _ = loadUiType('login.ui')
+
 
 class LoginWindow(QWidget, login_ui):
     def __init__(self, parent=None):
         super(LoginWindow, self).__init__(parent)
         self.setupUi(self)
         self.initUI()
+        
+            
 
     def initUI(self):
         self.setWindowTitle('Login')
@@ -24,9 +27,11 @@ class LoginWindow(QWidget, login_ui):
     def handle_login(self):
         username = self.username_input.text()
         password = self.password_input.text()
-        
-        if username == 'admin' and password == 'password':
+        global api
+
+        if api.login(username, password):
             self.accept_login()
+
         else:
             QMessageBox.warning(self, 'Error', 'Bad user or password')
         

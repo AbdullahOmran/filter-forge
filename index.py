@@ -17,6 +17,7 @@ import login_window
 from os import path
 import SignalViewer as sv
 from all_pass_filter import AllPassFilter, AllPassFilterFeature, OnlineFilter
+from conf import api
 
 ui, _ = loadUiType('main.ui')
 
@@ -322,8 +323,13 @@ def main():
     # window = MainApp()
     # window.show()
     # app.exec_()
-    app.login_window = login_window.LoginWindow()
-    app.login_window.show()
+    global api
+    if api.is_authenticated():
+        window = MainApp()
+        window.show()
+    else:
+        app.login_window = login_window.LoginWindow()
+        app.login_window.show()
     sys.exit(app.exec_())
 
 
