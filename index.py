@@ -13,11 +13,14 @@ import pandas as pd
 from PyQt5.uic import loadUiType
 import urllib.request
 import os
+import login_window 
 from os import path
 import SignalViewer as sv
 from all_pass_filter import AllPassFilter, AllPassFilterFeature, OnlineFilter
 
 ui, _ = loadUiType('main.ui')
+
+
 def create_plot_widget(graphics_view, object_name="", bottom_label="", left_label="", signal_viewer_title=None,
                        signal_plot=None):
     widget = pg.PlotWidget(graphics_view)
@@ -40,8 +43,11 @@ def create_plot_widget(graphics_view, object_name="", bottom_label="", left_labe
 
 class MainApp(QMainWindow, ui):
     def __init__(self, parent=None):
+        # The super() function in Python can take parameters to provide explicit context about which class's method is b
+        # eing called. In the context of multiple inheritance or when dealing with complex inheritance chains, 
+        # this helps ensure that the correct class's method is called.
         super(MainApp, self).__init__(parent)
-        QMainWindow.__init__(self)
+        # QMainWindow.__init__(self)
         self.setupUi(self)
         self.resize(1500, 900)
 
@@ -313,9 +319,12 @@ class MainApp(QMainWindow, ui):
 
 def main():
     app = QApplication(sys.argv)
-    window = MainApp()
-    window.show()
-    app.exec_()
+    # window = MainApp()
+    # window.show()
+    # app.exec_()
+    app.login_window = login_window.LoginWindow()
+    app.login_window.show()
+    sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
