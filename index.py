@@ -18,6 +18,7 @@ from os import path
 import SignalViewer as sv
 from all_pass_filter import AllPassFilter, AllPassFilterFeature, OnlineFilter
 from conf import api
+from workspace_dialog import WorkspaceDialog
 
 ui, _ = loadUiType('main.ui')
 
@@ -170,6 +171,7 @@ class MainApp(QMainWindow, ui):
 #############################################For Connecting Function###################################################
         self.all_pass_radioButton.clicked.connect(self.toggle_side_bar)
         self.clear_btn.clicked.connect(self.clear_graph)
+        self.workspace_btn.clicked.connect(self.manage_workspaces)
         self.show_all_pass_filter_btn.clicked.connect(self.show_all_pass_filter)
         self.all_pass_radioButton.clicked.connect(self.toggle_side_bar)
         self.clear_zeros_btn.clicked.connect(self.z_plane_signal_filter.clear_zeros)
@@ -315,6 +317,11 @@ class MainApp(QMainWindow, ui):
     def clear_all_pass_graph(self):
         self.all_pass_phase_plot_widget.clear()
         self.all_pass_unit_circle_widget.clear()
+    
+    def manage_workspaces(self):
+        dialog = WorkspaceDialog()
+        if dialog.exec_() == QDialog.Accepted:
+            print("Dialog accepted")
 
 
 
