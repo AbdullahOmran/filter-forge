@@ -14,8 +14,6 @@ class LoginWindow(QWidget, login_ui):
         super(LoginWindow, self).__init__(parent)
         self.setupUi(self)
         self.initUI()
-        
-            
 
     def initUI(self):
         self.setWindowTitle('Login')

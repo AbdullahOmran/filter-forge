@@ -455,7 +455,7 @@ QProgressBar::chunk{
                <item row="0" column="0">
                 <layout class="QVBoxLayout" name="verticalLayout_3">
                  <item>
-                  <widget class="QGraphicsView" name="unite_circle">
+                  <widget class="QGraphicsView" name="unit_circle">
                    <property name="styleSheet">
                     <string notr="true"/>
                    </property>
@@ -909,7 +909,7 @@ border-radius: 10px;
              </layout>
             </item>
             <item>
-             <widget class="QGraphicsView" name="all_pass_unite_circle">
+             <widget class="QGraphicsView" name="all_pass_unit_circle">
               <property name="styleSheet">
                <string notr="true"/>
               </property>

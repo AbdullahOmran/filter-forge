@@ -254,6 +254,7 @@ class ZPlaneSignalFilter(QWidget):
 
     def plot_response(self, zeros, poles):
         # Generate frequencies for the frequency range
+        # z, H(z)
         frequencies, response = freqz_zpk(zeros, poles, k=1)
 
         # Plot the magnitude response

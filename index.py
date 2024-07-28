@@ -87,8 +87,8 @@ class MainApp(QMainWindow, ui):
         self.filtered_signal_plot = sv.PlotSignal()
 
         self.unit_circle_graphics_views = [
-            self.unite_circle,
-            self.all_pass_unite_circle
+            self.unit_circle,
+            self.all_pass_unit_circle
         ]
 
         self.filtered_plot_widget, self.filtered_signal_viewer = create_plot_widget(
@@ -275,7 +275,7 @@ class MainApp(QMainWindow, ui):
             curr_t = time.time()
             x = lambda t: amplitude* np.cos(omega * t)
             # print(delta_x, delta_t,amplitude,omega,x(curr_t-self.start_time))
-            print(omega)
+            # print(omega)
             # Accumulate the signal based on the movement
             self.accumulated_signal.append(x(curr_t-self.start_time))
 
