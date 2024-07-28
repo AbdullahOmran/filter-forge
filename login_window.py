@@ -20,6 +20,7 @@ class LoginWindow(QWidget, login_ui):
         self.login_label.setAlignment(Qt.AlignCenter)
         self.submit_btn.clicked.connect(self.handle_login)
         self.main_window = None
+      
         
 
     def handle_login(self):

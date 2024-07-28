@@ -21,6 +21,10 @@ class APIClient(object):
             'login':f'{self.BASE_URL}/token',
             'register':f'{self.BASE_URL}/register',
             'get-current-user':f'{self.BASE_URL}/users/me',
+            'get-workspaces':f'{self.BASE_URL}/workspace',
+            'delete-workspace':f'{self.BASE_URL}/workspace',
+            'create-workspace':f'{self.BASE_URL}/workspace',
+            'create-zeros-poles':f'{self.BASE_URL}/workspace',
             
         }
 
@@ -65,6 +69,38 @@ class APIClient(object):
         if self.access_token:
             return True
         return False
+    
+    def fetch_workspaces(self):
+        res = requests.get(self.reverse('get-workspaces'), headers=self.headers)
+        return res.json()
+
+    def delete_workspace(self, id):
+        res = requests.delete(self.reverse('delete-workspace')+f'/{id}', headers=self.headers)
+        return res.status_code == 200
+
+    def delete_workspace_by_name(self, name):
+        workspaces = self.fetch_workspaces()
+        workspace = next((workspace for workspace in workspaces if workspace['workspace_name'] == name), None)
+        if workspace is not None:
+            workspace_id = workspace['id']
+            self.delete_workspace(workspace_id)
+
+    def create_workspace(self, name):
+        res = requests.post(self.reverse('create-workspace'), json={
+            "workspace_name": name,
+        }, headers=self.headers)
+        if res.status_code == 200:
+            return res.json()
+        
+    def create_zeros_poles(self,workspace_id, x, y, has_conj, is_zero):
+        res = requests.post(self.reverse('create-zeros-poles')+f'/{workspace_id}/zeros_poles', json={
+            'x': x,
+            'y': y,
+            'has_conj': has_conj,
+            'is_zero': is_zero,
+        }, headers=self.headers)
+        return res.status_code == 200
+    
 
 
     # def upload_image(self,filename):

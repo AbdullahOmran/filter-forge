@@ -320,8 +320,66 @@ class MainApp(QMainWindow, ui):
     
     def manage_workspaces(self):
         dialog = WorkspaceDialog()
+        global api
         if dialog.exec_() == QDialog.Accepted:
-            print("Dialog accepted")
+            if dialog.action_taken == 'open':
+                selected_workspace = dialog.selected_workspace()
+                if selected_workspace:
+                    self._open_workspace(selected_workspace)
+            elif dialog.action_taken == 'save':
+                selected_workspace = dialog.selected_workspace_name()
+                if selected_workspace:
+                    api.delete_workspace_by_name(selected_workspace)
+                    created_workspace = api.create_workspace(selected_workspace)
+                    if created_workspace:
+                        zeros_poles = self.change_zeros_poles_repr()
+                        for vect in zeros_poles:
+                            api.create_zeros_poles(created_workspace['id'], vect[0], vect[1], vect[2], vect[3])
+                        
+
+    def change_zeros_poles_repr(self):
+        zeros_poles = []
+        zeros = self.z_plane_signal_filter.zeros
+        zerosf = self.z_plane_signal_filter.zerosf
+        for zero in zeros:
+            has_conj = self._has_conjugate(zero, zerosf)
+            zeros_poles.append((zero[0], zero[1], has_conj, True))
+        poles = self.z_plane_signal_filter.poles
+        polesf = self.z_plane_signal_filter.polesf
+        for pole in poles:
+            has_conj = self._has_conjugate(pole, polesf)
+            zeros_poles.append((pole[0], pole[1], has_conj, False))
+        return zeros_poles
+
+    def _has_conjugate(self, num, num_list):
+        for n in num_list:
+            if np.isclose(np.linalg.norm([num[0] - n[0], num[1] + n[1]]), 0):
+                return True
+        return False
+
+    def _open_workspace(self, workspace):
+        self.z_plane_signal_filter.clear_zeros_and_poles()
+        for vect in workspace['zeros_poles']:
+            if vect['is_zero']:
+                self.z_plane_signal_filter.zeros.append((vect['x'], vect['y']))
+                self.z_plane_signal_filter.plot_one_zero(vect['x'], vect['y'])
+                if vect['has_conj']:
+                    self.z_plane_signal_filter.zerosf.append((vect['x'], -vect['y']))
+                    self.z_plane_signal_filter.plot_one_zero(vect['x'], -vect['y'], brush='g')
+                
+            else:
+                self.z_plane_signal_filter.poles.append((vect['x'], vect['y']))
+                self.z_plane_signal_filter.plot_one_pole(vect['x'], vect['y'])
+                if vect['has_conj']:
+                    self.z_plane_signal_filter.polesf.append((vect['x'], -vect['y']))
+                    self.z_plane_signal_filter.plot_one_pole(vect['x'], -vect['y'], brush='g')
+        self.z_plane_signal_filter.plot_frequency_response()
+            
+
+        
+                    
+                
+        
 
 
 

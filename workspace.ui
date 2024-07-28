@@ -284,7 +284,8 @@ QProgressBar::chunk{
      <item>
       <widget class="QListWidget" name="workspace_list">
        <property name="styleSheet">
-        <string notr="true">background-color:white</string>
+        <string notr="true">background-color:white;
+color:black;</string>
        </property>
       </widget>
      </item>

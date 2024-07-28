@@ -214,12 +214,8 @@ class ZPlaneSignalFilter(QWidget):
         self.plot_frequency_response()
 
     def plot_pole(self, x, y):
-        target_pole = pg.TargetItem(pos=[x, y], size=20, symbol='x', pen='w', brush='w', movable=True)
-        self.pole_items.append(target_pole)
-        self.plot_widget.addItem(target_pole)
 
-        target_pole.sigPositionChanged.connect(lambda e: self.pole_moved(id(target_pole), e))
-        target_pole.sigPositionChanged.connect(lambda e: self.update_pole_position(target_pole, e))
+        self.plot_one_pole(x,y)
 
         if self.reflect_checkbox.isChecked():
             reflected_y = -y
@@ -230,13 +226,25 @@ class ZPlaneSignalFilter(QWidget):
             self.plot_widget.addItem(target_reflected_pole)
             self.list_pairs_poles = [(target_pole, target_reflected_pole)]
 
-    def plot_zero(self, x, y):
-        target_zero = pg.TargetItem(pos=[x, y], size=20, symbol='o', pen='w', brush='w', movable=True)
+    def plot_one_pole(self, x,y, brush='w'):
+        target_pole = pg.TargetItem(pos=[x, y], size=20, symbol='x', pen='w', brush=brush, movable=True)
+        self.pole_items.append(target_pole)
+        self.plot_widget.addItem(target_pole)
+
+        target_pole.sigPositionChanged.connect(lambda e: self.pole_moved(id(target_pole), e))
+        target_pole.sigPositionChanged.connect(lambda e: self.update_pole_position(target_pole, e))
+
+    def plot_one_zero(self, x,y, brush= 'w'):
+        target_zero = pg.TargetItem(pos=[x, y], size=20, symbol='o', pen='w', brush=brush, movable=True)
         self.zero_items.append(target_zero)
         self.plot_widget.addItem(target_zero)
 
         target_zero.sigPositionChanged.connect(lambda e: self.zero_moved(id(target_zero), e))
         target_zero.sigPositionChanged.connect(lambda e: self.update_zero_position(target_zero, e))
+
+    def plot_zero(self, x, y):
+
+        self.plot_one_zero(x,y)
 
         if self.reflect_checkbox.isChecked():
             reflected_y = -y
