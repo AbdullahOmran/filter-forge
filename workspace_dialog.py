@@ -18,6 +18,7 @@ class WorkspaceDialog(QDialog, workspace_ui):
         self.show_items()
         self.new_btn.clicked.connect(self.add_new_element)
         self.save_btn.clicked.connect(self.save_workspace)
+        self.delete_btn.clicked.connect(self.delete_workspace)
         self.action_taken = None
     
     def accept(self):
@@ -64,6 +65,13 @@ class WorkspaceDialog(QDialog, workspace_ui):
     def save_workspace(self):
         super().accept()
         self.action_taken = 'save'
+
+    def delete_workspace(self):
+        workspace = self.selected_workspace_name()
+        global api
+        api.delete_workspace_by_name(workspace)
+        self.workspace_list.clear()
+        self.show_items()
 
 # if __name__ == "__main__":
 #     app = QApplication(sys.argv)
